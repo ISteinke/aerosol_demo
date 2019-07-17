@@ -2,6 +2,7 @@ from netCDF4 import Dataset as netcdf_dataset
 import numpy as np
 import pandas as pd
 import sys
+import os
 
 variable_names =  ["mom_a1", "mom_a2", "mom_a3", "mom_a4",
                    "mom_c1", "mom_c2", "mom_c3", "mom_c4",
@@ -37,10 +38,9 @@ def geo_idx(dd, dd_array):
     geo_idx = (np.abs(dd_array - dd)).argmin()
     return geo_idx
 
-##turn to fxn
 def getPointDF(dirname,filename,in_lat,in_lon,make_csv=True):
     ##open netcdf
-    nc = netcdf_dataset(dirname+filename)
+    nc = netcdf_dataset(os.path.join('.',dirname,filename))
     ##pick a point
     lats = nc.variables['lat'][:]
     lons = nc.variables['lon'][:]
@@ -59,7 +59,7 @@ def getPointDF(dirname,filename,in_lat,in_lon,make_csv=True):
             vardf.loc[varname,:] = var[:,0,lat_idx,lon_idx]
     ##write to csv with newfilename
     if(make_csv):
-        newfilename = dirname+filename.split(".")[0]+'_'+str(in_lat)+'_'+str(in_lon)+".csv"
+        newfilename = os.path.join('.',dirname,filename.split(".")[0]+'_'+str(in_lat)+'_'+str(in_lon)+".csv")
         vardf.to_csv(newfilename)
     return(vardf)
 

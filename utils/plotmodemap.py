@@ -3,10 +3,12 @@ import numpy as np
 import pandas as pd
 from copy import deepcopy
 import matplotlib.pyplot as plt
+import matplotlib.ticker as mticker
 import cartopy.crs as ccrs
+from cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
+import os
 
-
-nc = '../data/surface_chem_E3SM_v0_MOA.nc'
+nc = os.path.join('..','data','surface_chem_E3SM_v0_MOA.nc')
 nc = netcdf_dataset(nc)
 
 variable_names =  ["mom_a1", "mom_a2", "mom_a3", "mom_a4",
@@ -117,7 +119,12 @@ for modenumber in modenumbers:
 
     ax = plt.axes(projection=ccrs.PlateCarree())
     ax.coastlines()
-
+    gl = ax.gridlines(crs=ccrs.PlateCarree(), draw_labels=True,
+                  linewidth=2, color='gray', alpha=0.5, linestyle='--')
+    gl.xlabels_top = False
+    gl.ylabels_left = False
+    gl.xformatter = LONGITUDE_FORMATTER
+    gl.yformatter = LATITUDE_FORMATTER
     cs = plt.contourf(lon[:],lat[:],num_sum_vol_avg) 
 
     cbar = plt.colorbar(cs, ax=ax, orientation='horizontal')
